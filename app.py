@@ -128,6 +128,24 @@ with app.app_context():
                     'source': '중앙일보',
                     'published_date': datetime.now() - timedelta(hours=18),
                     'category': 'Politics'
+                },
+                {
+                    'title': '기지촌 여성 인권침해 실태조사 결과 발표',
+                    'summary': '미군기지 주변 기지촌에서 일어난 여성 인권침해 실태조사 결과가 발표됐다. 체계적인 지원방안 마련이 시급하다는 지적이 나왔다.',
+                    'content': '국가인권위원회가 실시한 기지촌 여성 인권침해 실태조사 결과가 발표됐다. 조사에 따르면 1960-80년대 미군기지 주변에서 성매매에 종사했던 여성들이 겪은 인권침해가 심각한 수준이었던 것으로 나타났다.',
+                    'url': 'https://example.com/article6',
+                    'source': '한겨레',
+                    'published_date': datetime.now() - timedelta(hours=24),
+                    'category': 'Human Rights'
+                },
+                {
+                    'title': '미군 위안부 피해자들의 증언 다큐멘터리 제작',
+                    'summary': '기지촌 여성들의 생생한 증언을 담은 다큐멘터리가 제작됐다. 숨겨진 역사의 진실을 알리는 데 기여할 것으로 기대된다.',
+                    'content': '1970년대 평택, 의정부 등 미군기지 주변 기지촌에서 생활했던 여성들의 증언을 담은 다큐멘터리 "잊혀진 목소리"가 제작됐다. 이 작품은 그동안 조명받지 못했던 미군 위안부 문제를 다루고 있다.',
+                    'url': 'https://example.com/article7',
+                    'source': 'SBS News',
+                    'published_date': datetime.now() - timedelta(hours=30),
+                    'category': 'Culture'
                 }
             ]
             

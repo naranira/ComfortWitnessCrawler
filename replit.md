@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Flask-based web application that aggregates news articles about Japanese military comfort women issues. The system scrapes articles from various RSS feeds and news sources, stores them in memory (MVP version), and provides a web interface for browsing and searching articles.
+This is a Flask-based web application that aggregates news articles about both Japanese military and US military comfort women issues. The system scrapes articles from various RSS feeds and news sources, stores them in memory (MVP version), and provides a web interface for browsing and searching articles.
 
 ## System Architecture
 
@@ -101,6 +101,7 @@ Changelog:
 - June 30, 2025. Initial setup
 - June 30, 2025. Added archive page for browsing all articles by date
 - June 30, 2025. Integrated Vertex AI Search for AI-powered news summaries on homepage
+- June 30, 2025. Extended coverage to include US military comfort women issues (기지촌, 미군 위안부)
 
 ## User Preferences
 
