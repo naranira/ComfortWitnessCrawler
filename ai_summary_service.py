@@ -223,6 +223,8 @@ class VertexAISummaryService:
                 # Extract specific events and activities
                 if '정의기억연대' in full_text or '정의연' in full_text:
                     organizations.append('정의기억연대')
+                if '국가인권위원회' in full_text:
+                    organizations.append('국가인권위원회')
                 if '추모식' in full_text:
                     key_events.append('추모식 개최')
                 if '전시회' in full_text or '전시' in full_text:
@@ -233,6 +235,12 @@ class VertexAISummaryService:
                     key_events.append('증언집 발간')
                 if '성명' in full_text or '촉구' in full_text:
                     key_events.append('성명서 발표')
+                if '실태조사' in full_text:
+                    key_events.append('실태조사 발표')
+                if '다큐멘터리' in full_text:
+                    key_events.append('다큐멘터리 제작')
+                if '기지촌' in full_text or '미군 위안부' in full_text:
+                    key_events.append('미군 위안부 이슈')
                 
                 # Extract locations
                 if '독일' in full_text or '베를린' in full_text:
@@ -241,6 +249,12 @@ class VertexAISummaryService:
                     locations.append('서울')
                 if '종로' in full_text:
                     locations.append('종로구')
+                if '평택' in full_text:
+                    locations.append('평택')
+                if '의정부' in full_text:
+                    locations.append('의정부')
+                if '기지촌' in full_text:
+                    locations.append('미군기지 주변')
                 
                 # Extract publication date info
                 pub_date = article.get('published_date')

@@ -17,12 +17,19 @@ class NewsScraperService:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
         
-        # Keywords for filtering relevant articles
+        # Keywords for filtering relevant articles (both Japanese and US military)
         self.keywords = [
+            # Japanese military comfort women
             'comfort women', 'comfort woman', '위안부', 'wianbu',
             'japanese military', 'imperial japan', 'wartime sexual slavery',
             'sex slaves', 'sexual slavery', 'world war ii korea',
-            'forced prostitution', 'military brothel', 'ianfu'
+            'forced prostitution', 'military brothel', 'ianfu',
+            
+            # US military comfort women  
+            '미군 위안부', '기지촌', '기지촌 여성', 'camp town',
+            'us military prostitution', 'american military', 'gi town',
+            '양공주', '양갈보', 'monkey house', 'vd clinic',
+            '기지촌 성매매', '미군기지 주변', 'us base prostitution'
         ]
         
         # RSS feeds and news sources (Korean sources)
@@ -145,8 +152,11 @@ class NewsScraperService:
             try:
                 logging.info(f"Scraping website: {site['name']}")
                 
-                # Search for comfort women related articles
-                search_terms = ['comfort women', '위안부', 'wartime sexual slavery']
+                # Search for comfort women related articles (Japanese and US military)
+                search_terms = [
+                    'comfort women', '위안부', 'wartime sexual slavery',
+                    '미군 위안부', '기지촌', 'camp town', '기지촌 여성'
+                ]
                 
                 for term in search_terms:
                     try:
