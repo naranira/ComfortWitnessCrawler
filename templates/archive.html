@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Article Archive - Comfort Women News Aggregator{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-archive text-info me-2"></i>
+                Article Archive
+            </h1>
+            <div class="text-muted">
+                <small>
+                    <i class="fas fa-articles me-1"></i>
+                    {{ total_articles }} total articles
+                </small>
+            </div>
+        </div>
+
+        {% if not articles_by_date %}
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3 fs-4"></i>
+                <div>
+                    <h6 class="alert-heading mb-1">No archived articles yet</h6>
+                    <p class="mb-0">
+                        Articles will appear here as they are collected from news sources.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Articles grouped by date -->
+        {% for date, articles in articles_by_date.items() %}
+        <div class="mb-4">
+            <div class="d-flex align-items-center mb-3">
+                <h4 class="h5 mb-0 text-info">
+                    <i class="fas fa-calendar me-2"></i>
+                    {{ date }}
+                </h4>
+                <span class="badge bg-secondary ms-3">{{ articles|length }} articles</span>
+            </div>
+
+            <div class="row">
+                {% for article in articles %}
+                <div class="col-lg-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title mb-2">
+                                <a href="{{ url_for('article_detail', url=article.url) }}" 
+                                   class="text-decoration-none">
+                                    {{ article.title }}
+                                </a>
+                            </h6>
+                            
+                            {% if article.summary %}
+                            <p class="card-text text-muted small">
+                                {{ article.summary[:120] }}{% if article.summary|length > 120 %}...{% endif %}
+                            </p>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="d-flex flex-wrap gap-1">
+                                    <span class="badge bg-secondary small">
+                                        {{ article.source }}
+                                    </span>
+                                    {% if article.category %}
+                                    <span class="badge bg-info small">
+                                        {{ article.category }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <small class="text-muted">
+                                    {{ article.published_date.strftime('%H:%M') if article.published_date else 'Time unknown' }}
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex gap-1 mt-2">
+                                <a href="{{ article.url }}" target="_blank" 
+                                   class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-external-link-alt me-1"></i>
+                                    Source
+                                </a>
+                                
+                                <a href="{{ url_for('article_detail', url=article.url) }}" 
+                                   class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    Read
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr class="my-4">
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if articles_by_date and (has_prev or has_next) %}
+        <nav aria-label="Archive pagination">
+            <ul class="pagination justify-content-center">
+                {% if has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('archive', page=page-1) }}">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </span>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page }}
+                    </span>
+                </li>
+
+                {% if has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('archive', page=page+1) }}">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
