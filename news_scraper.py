@@ -25,38 +25,54 @@ class NewsScraperService:
             'forced prostitution', 'military brothel', 'ianfu'
         ]
         
-        # RSS feeds and news sources
+        # RSS feeds and news sources (Korean sources)
         self.rss_sources = [
             {
-                'name': 'Korean Central News Agency',
-                'url': 'http://www.kcna.kp/rss/rss.php',
-                'category': 'Official'
-            },
-            {
-                'name': 'Yonhap News',
-                'url': 'https://en.yna.co.kr/RSS/politics.xml',
+                'name': '연합뉴스',
+                'url': 'https://www.yna.co.kr/rss/politics.xml',
                 'category': 'Politics'
             },
             {
-                'name': 'Korea Herald',
-                'url': 'http://www.koreaherald.com/rss/04.xml',
-                'category': 'National'
+                'name': '한겨레',
+                'url': 'http://www.hani.co.kr/rss/',
+                'category': 'News'
+            },
+            {
+                'name': '경향신문',
+                'url': 'http://www.khan.co.kr/rss/rssdata/total_news.xml',
+                'category': 'News'
+            },
+            {
+                'name': '중앙일보',
+                'url': 'https://rss.joins.com/joins_news_list.xml',
+                'category': 'News'
+            },
+            {
+                'name': 'KBS News',
+                'url': 'http://world.kbs.co.kr/rss/rss_news.htm?lang=k',
+                'category': 'Broadcasting'
             }
         ]
         
-        # News websites to scrape
+        # News websites to scrape (Korean sites)
         self.news_sites = [
             {
-                'name': 'Japan Times',
-                'base_url': 'https://www.japantimes.co.jp',
-                'search_url': 'https://www.japantimes.co.jp/search/',
-                'category': 'International'
+                'name': '조선일보',
+                'base_url': 'https://www.chosun.com',
+                'search_url': 'https://www.chosun.com/nsearch/',
+                'category': 'News'
             },
             {
-                'name': 'Korea Times',
-                'base_url': 'https://www.koreatimes.co.kr',
-                'search_url': 'https://www.koreatimes.co.kr/www/common/searchResult.do',
-                'category': 'National'
+                'name': '동아일보',
+                'base_url': 'https://www.donga.com',
+                'search_url': 'https://www.donga.com/news/search',
+                'category': 'News'
+            },
+            {
+                'name': 'SBS News',
+                'base_url': 'https://news.sbs.co.kr',
+                'search_url': 'https://news.sbs.co.kr/news/search/main.do',
+                'category': 'Broadcasting'
             }
         ]
     
