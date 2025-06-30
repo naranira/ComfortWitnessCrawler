@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Search Articles - Comfort Women News Aggregator{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">
+            <i class="fas fa-search text-info me-2"></i>
+            Search Articles
+        </h1>
+
+        <!-- Search and filter form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('search') }}">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="search-query" class="form-label">Search Keywords</label>
+                            <input type="text" class="form-control" id="search-query" name="q" 
+                                   value="{{ query }}" placeholder="Enter keywords to search...">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="category-filter" class="form-label">Category</label>
+                            <select class="form-select" id="category-filter" name="category">
+                                <option value="">All Categories</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>
+                                    {{ cat }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="source-filter" class="form-label">Source</label>
+                            <select class="form-select" id="source-filter" name="source">
+                                <option value="">All Sources</option>
+                                {% for src in sources %}
+                                <option value="{{ src }}" {% if src == source %}selected{% endif %}>
+                                    {{ src }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search me-1"></i>
+                                Search
+                            </button>
+                            <a href="{{ url_for('search') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>
+                                Clear Filters
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search results -->
+        {% if query or category or source %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">
+                Search Results 
+                <span class="badge bg-info ms-2">{{ total_results }} found</span>
+            </h5>
+            
+            {% if query %}
+            <small class="text-muted">
+                Searching for: "<strong>{{ query }}</strong>"
+                {% if category %} in category "<strong>{{ category }}</strong>"{% endif %}
+                {% if source %} from source "<strong>{{ source }}</strong>"{% endif %}
+            </small>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if not articles and (query or category or source) %}
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-search me-3 fs-4"></i>
+                <div>
+                    <h6 class="alert-heading mb-1">No articles found</h6>
+                    <p class="mb-0">
+                        Try adjusting your search terms or filters to find more articles.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% elif not articles and not query and not category and not source %}
+        <div class="alert alert-light" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3 fs-4"></i>
+                <div>
+                    <h6 class="alert-heading mb-1">Search for articles</h6>
+                    <p class="mb-0">
+                        Use the search form above to find articles about comfort women issues.
+                        You can search by keywords, filter by category, or source.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Search results list -->
+        {% for article in articles %}
+        <article class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h5 class="card-title mb-2">
+                            <a href="{{ url_for('article_detail', url=article.url) }}" 
+                               class="text-decoration-none">
+                                {{ article.title }}
+                            </a>
+                        </h5>
+                        
+                        {% if article.summary %}
+                        <p class="card-text text-muted">
+                            {{ article.summary[:200] }}{% if article.summary|length > 200 %}...{% endif %}
+                        </p>
+                        {% endif %}
+                        
+                        <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-globe me-1"></i>
+                                {{ article.source }}
+                            </span>
+                            
+                            {% if article.category %}
+                            <span class="badge bg-info">
+                                <i class="fas fa-tag me-1"></i>
+                                {{ article.category }}
+                            </span>
+                            {% endif %}
+                            
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                {{ article.published_date.strftime('%Y-%m-%d %H:%M') if article.published_date else 'Date unknown' }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 text-end">
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ article.url }}" target="_blank" 
+                               class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Original Source
+                            </a>
+                            
+                            <a href="{{ url_for('article_detail', url=article.url) }}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+
+        <!-- Pagination for search results -->
+        {% if articles and (has_prev or has_next) %}
+        <nav aria-label="Search results pagination">
+            <ul class="pagination justify-content-center">
+                {% if has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('search', q=query, category=category, source=source, page=page-1) }}">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </span>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page }}
+                    </span>
+                </li>
+
+                {% if has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('search', q=query, category=category, source=source, page=page+1) }}">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

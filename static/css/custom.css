@@ -1,0 +1,179 @@
+/* Custom styles for Comfort Women News Aggregator */
+
+/* Article content styling */
+.article-content {
+    line-height: 1.7;
+    font-size: 1.05rem;
+    text-align: justify;
+}
+
+.article-content p {
+    margin-bottom: 1rem;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Link styling */
+.card-title a {
+    color: var(--bs-body-color);
+    transition: color 0.2s ease;
+}
+
+.card-title a:hover {
+    color: var(--bs-info);
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+/* Search form styling */
+.form-label {
+    font-weight: 600;
+    color: var(--bs-body-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Alert styling */
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-heading {
+    font-weight: 600;
+}
+
+/* Button styling */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Pagination styling */
+.pagination .page-link {
+    border-radius: 6px;
+    margin: 0 2px;
+    border: 1px solid var(--bs-border-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--bs-info);
+    border-color: var(--bs-info);
+}
+
+/* Navigation styling */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body .row .col-md-3 {
+        margin-top: 1rem;
+    }
+    
+    .card-body .row .col-md-3 .d-flex {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    
+    .card-body .row .col-md-3 .d-flex .btn {
+        margin-right: 0.5rem;
+    }
+    
+    .navbar-nav .form-control {
+        width: 200px !important;
+    }
+}
+
+/* Loading animation */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Content spacing */
+.content-body {
+    padding: 1rem 0;
+}
+
+/* Breadcrumb styling */
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-weight: bold;
+}
+
+/* Text utilities */
+.text-justify {
+    text-align: justify;
+}
+
+/* Custom border utilities */
+.border-start {
+    border-left: 4px solid !important;
+}
+
+/* Animation for refresh button */
+.btn-refresh-spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Article meta information */
+.article-meta {
+    font-size: 0.9rem;
+    color: var(--bs-secondary);
+}
+
+/* Search result highlighting */
+.search-highlight {
+    background-color: rgba(255, 193, 7, 0.3);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--bs-secondary);
+    margin-bottom: 1rem;
+}

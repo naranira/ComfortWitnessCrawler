@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if article %}{{ article.title }} - Comfort Women News{% else %}Article Not Found{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                <div>
+                    <h6 class="alert-heading mb-1">Article Not Found</h6>
+                    <p class="mb-0">{{ error }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Latest News
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Article header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Article</li>
+                </ol>
+            </nav>
+        </div>
+
+        <article class="card">
+            <div class="card-header">
+                <h1 class="h3 mb-3">{{ article.title }}</h1>
+                
+                <div class="d-flex flex-wrap gap-3 align-items-center text-muted">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-globe me-2"></i>
+                        <strong>Source:</strong>
+                        <span class="ms-1">{{ article.source }}</span>
+                    </div>
+                    
+                    {% if article.category %}
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-tag me-2"></i>
+                        <strong>Category:</strong>
+                        <span class="ms-1">{{ article.category }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        <strong>Published:</strong>
+                        <span class="ms-1">
+                            {{ article.published_date.strftime('%B %d, %Y at %H:%M') if article.published_date else 'Date unknown' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                {% if article.summary and article.summary != article.content %}
+                <div class="alert alert-light border-start border-4 border-info">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-file-alt me-2"></i>Summary
+                    </h6>
+                    <p class="mb-0">{{ article.summary }}</p>
+                </div>
+                {% endif %}
+                
+                {% if article.content %}
+                <div class="content-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-align-left me-2"></i>Full Content
+                    </h6>
+                    <div class="article-content">
+                        {{ article.content|safe|replace('\n', '<br>')|replace('\n\n', '<p></p>') }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <hr class="my-4">
+                
+                <!-- Action buttons -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="{{ article.url }}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>
+                            Read Original Article
+                        </a>
+                        
+                        <button class="btn btn-secondary ms-2" onclick="shareArticle()">
+                            <i class="fas fa-share me-2"></i>
+                            Share
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to News
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+        
+        <!-- Related articles section (could be implemented in future) -->
+        <div class="mt-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="card-title">
+                        <i class="fas fa-search me-2"></i>
+                        Find More Articles
+                    </h6>
+                    <p class="card-text text-muted">
+                        Use our search feature to find more articles on comfort women issues.
+                    </p>
+                    <a href="{{ url_for('search') }}" class="btn btn-info btn-sm">
+                        <i class="fas fa-search me-2"></i>
+                        Search Articles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function shareArticle() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ article.title|replace("'", "\\'") }}',
+            text: '{{ article.summary|replace("'", "\\'")|truncate(100) }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showAlert('Article URL copied to clipboard!', 'success');
+        });
+    }
+}
+</script>
+{% endblock %}

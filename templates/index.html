@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Latest News - Comfort Women News Aggregator{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-newspaper text-info me-2"></i>
+                Latest News on Comfort Women Issues
+            </h1>
+            <div class="text-muted">
+                <small>
+                    <i class="fas fa-articles me-1"></i>
+                    {{ total_articles }} total articles
+                </small>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if not articles and not error %}
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3 fs-4"></i>
+                <div>
+                    <h6 class="alert-heading mb-1">No articles available yet</h6>
+                    <p class="mb-0">
+                        News articles are being collected. Please check back in a few minutes or click the refresh button.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Articles list -->
+        {% for article in articles %}
+        <article class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h5 class="card-title mb-2">
+                            <a href="{{ url_for('article_detail', url=article.url) }}" 
+                               class="text-decoration-none">
+                                {{ article.title }}
+                            </a>
+                        </h5>
+                        
+                        {% if article.summary %}
+                        <p class="card-text text-muted">
+                            {{ article.summary[:200] }}{% if article.summary|length > 200 %}...{% endif %}
+                        </p>
+                        {% endif %}
+                        
+                        <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-globe me-1"></i>
+                                {{ article.source }}
+                            </span>
+                            
+                            {% if article.category %}
+                            <span class="badge bg-info">
+                                <i class="fas fa-tag me-1"></i>
+                                {{ article.category }}
+                            </span>
+                            {% endif %}
+                            
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                {{ article.published_date.strftime('%Y-%m-%d %H:%M') if article.published_date else 'Date unknown' }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 text-end">
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ article.url }}" target="_blank" 
+                               class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Original Source
+                            </a>
+                            
+                            <a href="{{ url_for('article_detail', url=article.url) }}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if articles and (has_prev or has_next) %}
+        <nav aria-label="Article pagination">
+            <ul class="pagination justify-content-center">
+                {% if has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=page-1) }}">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </span>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page }}
+                    </span>
+                </li>
+
+                {% if has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=page+1) }}">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
