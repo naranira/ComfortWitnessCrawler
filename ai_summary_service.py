@@ -24,9 +24,17 @@ class VertexAISummaryService:
             if self.credentials_path:
                 # If credentials file is provided as JSON string, save it
                 if self.credentials_path.startswith('{'):
-                    with open('/tmp/google_credentials.json', 'w') as f:
+                    credentials_file = '/tmp/google_credentials.json'
+                    with open(credentials_file, 'w') as f:
                         f.write(self.credentials_path)
-                    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/tmp/google_credentials.json'
+                    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
+                elif self.credentials_path.isdigit():
+                    # Handle case where credential path is just a number (invalid)
+                    logging.warning("Invalid credentials path provided, using fallback")
+                    self.credentials = None
+                    return
+                else:
+                    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = self.credentials_path
                     
             # Get default credentials
             self.credentials, _ = default()
@@ -48,32 +56,39 @@ class VertexAISummaryService:
             return None
     
     def generate_summary(self, articles: List[Dict]) -> Optional[str]:
-        """Generate a summary of recent articles using Vertex AI"""
-        if not self.project_id or not self.search_config_id or not articles:
+        """Generate a summary of recent articles using Vertex AI or fallback text processing"""
+        if not articles:
             return None
             
         try:
-            # Prepare article texts for summarization
-            article_texts = []
-            for article in articles[:5]:  # Use only the 5 most recent articles
-                text = f"Title: {article.get('title', '')}\n"
-                if article.get('summary'):
-                    text += f"Summary: {article['summary']}\n"
-                elif article.get('content'):
-                    text += f"Content: {article['content'][:500]}...\n"
-                text += f"Source: {article.get('source', '')}\n"
-                text += f"Date: {article.get('published_date', '')}\n\n"
-                article_texts.append(text)
+            # Try Vertex AI first if credentials are available
+            if self.credentials and self.project_id and self.search_config_id:
+                # Prepare article texts for summarization
+                article_texts = []
+                for article in articles[:5]:  # Use only the 5 most recent articles
+                    text = f"Title: {article.get('title', '')}\n"
+                    if article.get('summary'):
+                        text += f"Summary: {article['summary']}\n"
+                    elif article.get('content'):
+                        text += f"Content: {article['content'][:500]}...\n"
+                    text += f"Source: {article.get('source', '')}\n"
+                    text += f"Date: {article.get('published_date', '')}\n\n"
+                    article_texts.append(text)
+                
+                combined_text = "\n".join(article_texts)
+                
+                # Generate summary using Vertex AI Generative AI
+                summary = self._generate_ai_summary(combined_text)
+                if summary:
+                    return summary
             
-            combined_text = "\n".join(article_texts)
-            
-            # Generate summary using Vertex AI Generative AI
-            summary = self._generate_ai_summary(combined_text)
-            return summary
+            # Fallback to rule-based summary if Vertex AI is not available
+            return self._generate_fallback_summary(articles[:5])
             
         except Exception as e:
             logging.error(f"Error generating summary: {e}")
-            return None
+            # Return fallback summary even if there's an error
+            return self._generate_fallback_summary(articles[:5])
     
     def _generate_ai_summary(self, text: str) -> Optional[str]:
         """Generate AI summary using Vertex AI API"""
@@ -186,3 +201,74 @@ class VertexAISummaryService:
             logging.error(f"Error calling Vertex AI Search API: {e}")
             
         return []
+    
+    def _generate_fallback_summary(self, articles: List[Dict]) -> Optional[str]:
+        """Generate a rule-based summary when AI is not available"""
+        try:
+            if not articles:
+                return None
+            
+            # Count categories and sources
+            categories = {}
+            sources = {}
+            recent_topics = []
+            
+            for article in articles:
+                # Count categories
+                category = article.get('category', '기타')
+                categories[category] = categories.get(category, 0) + 1
+                
+                # Count sources
+                source = article.get('source', '기타')
+                sources[source] = sources.get(source, 0) + 1
+                
+                # Extract key topics from titles
+                title = article.get('title', '')
+                if any(keyword in title.lower() for keyword in ['추모', '기림', '기념']):
+                    recent_topics.append('추모 행사')
+                elif any(keyword in title.lower() for keyword in ['전시', '전시회', '갤러리']):
+                    recent_topics.append('전시 활동')
+                elif any(keyword in title.lower() for keyword in ['국정감사', '정부', '국회']):
+                    recent_topics.append('정부 정책')
+                elif any(keyword in title.lower() for keyword in ['번역', '발간', '책']):
+                    recent_topics.append('출판 활동')
+                elif any(keyword in title.lower() for keyword in ['사과', '배상', '촉구']):
+                    recent_topics.append('해결 촉구')
+            
+            # Generate summary text
+            summary_parts = []
+            
+            # Main topic summary
+            if recent_topics:
+                unique_topics = list(set(recent_topics))
+                if len(unique_topics) == 1:
+                    summary_parts.append(f"최근 일본군 위안부 문제와 관련해 {unique_topics[0]}에 관한 소식이 주요하게 다뤄지고 있습니다.")
+                else:
+                    topics_str = ', '.join(unique_topics[:3])
+                    summary_parts.append(f"최근 일본군 위안부 문제와 관련해 {topics_str} 등 다양한 활동이 보고되고 있습니다.")
+            else:
+                summary_parts.append("최근 일본군 위안부 문제와 관련된 다양한 소식들이 전해지고 있습니다.")
+            
+            # Source diversity
+            if len(sources) > 1:
+                source_names = list(sources.keys())[:3]
+                sources_str = ', '.join(source_names)
+                summary_parts.append(f"{sources_str} 등 여러 언론사에서 관련 보도를 하고 있으며,")
+            
+            # Category summary
+            if '정치' in categories or 'Politics' in categories:
+                summary_parts.append("정부 차원의 대응과 정책적 논의가 이어지고 있습니다.")
+            elif '국제' in categories or 'International' in categories:
+                summary_parts.append("국제적인 연대와 지지 활동이 활발히 진행되고 있습니다.")
+            elif '사회' in categories or 'Social' in categories:
+                summary_parts.append("시민사회의 지속적인 관심과 참여가 이어지고 있습니다.")
+            else:
+                summary_parts.append("피해자들의 명예회복과 역사적 진실 규명을 위한 노력이 계속되고 있습니다.")
+            
+            summary = " ".join(summary_parts)
+            
+            return summary
+            
+        except Exception as e:
+            logging.error(f"Error generating fallback summary: {e}")
+            return "최근 일본군 위안부 문제와 관련된 다양한 소식들이 전해지고 있으며, 피해자들의 명예회복과 역사적 진실 규명을 위한 노력이 계속되고 있습니다."
