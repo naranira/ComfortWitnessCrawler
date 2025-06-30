@@ -25,6 +25,25 @@
         </div>
         {% endif %}
 
+        <!-- AI Summary Section -->
+        {% if ai_summary and page == 1 %}
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-brain me-2"></i>
+                    AI 뉴스 요약
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ ai_summary }}</p>
+                <small class="text-muted">
+                    <i class="fas fa-robot me-1"></i>
+                    최신 5개 기사를 바탕으로 AI가 생성한 요약입니다
+                </small>
+            </div>
+        </div>
+        {% endif %}
+
         {% if not articles and not error %}
         <div class="alert alert-info" role="alert">
             <div class="d-flex align-items-center">

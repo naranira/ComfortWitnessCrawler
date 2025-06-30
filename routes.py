@@ -2,10 +2,11 @@ from flask import render_template, request, jsonify, url_for
 from app import app, articles_storage, last_update
 import logging
 from datetime import datetime
+from ai_summary_service import VertexAISummaryService
 
 @app.route('/')
 def index():
-    """Main page showing latest articles"""
+    """Main page showing latest articles with AI summary"""
     page = request.args.get('page', 1, type=int)
     per_page = 10
     
@@ -19,13 +20,23 @@ def index():
     has_prev = page > 1
     has_next = end_idx < total_articles
     
+    # Generate AI summary for the first page only
+    ai_summary = None
+    if page == 1 and articles_storage:
+        try:
+            ai_service = VertexAISummaryService()
+            ai_summary = ai_service.generate_summary(articles_storage[:5])
+        except Exception as e:
+            logging.error(f"Error generating AI summary: {e}")
+    
     return render_template('index.html',
                          articles=page_articles,
                          page=page,
                          has_prev=has_prev,
                          has_next=has_next,
                          total_articles=total_articles,
-                         last_update=last_update)
+                         last_update=last_update,
+                         ai_summary=ai_summary)
 
 @app.route('/article/<path:url>')
 def article_detail(url):
@@ -139,6 +150,38 @@ def refresh_articles():
             'success': False,
             'message': f'Error refreshing articles: {str(e)}'
         }), 500
+
+@app.route('/archive')
+def archive():
+    """Archive page showing all articles by date"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    
+    # Get articles for current page
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    page_articles = articles_storage[start_idx:end_idx]
+    
+    # Calculate pagination info
+    total_articles = len(articles_storage)
+    has_prev = page > 1
+    has_next = end_idx < total_articles
+    
+    # Group articles by date for better organization
+    from collections import defaultdict
+    articles_by_date = defaultdict(list)
+    
+    for article in page_articles:
+        date_key = article['published_date'].strftime('%Y-%m-%d') if article['published_date'] else 'Unknown Date'
+        articles_by_date[date_key].append(article)
+    
+    return render_template('archive.html',
+                         articles_by_date=dict(articles_by_date),
+                         page=page,
+                         has_prev=has_prev,
+                         has_next=has_next,
+                         total_articles=total_articles,
+                         last_update=last_update)
 
 @app.route('/api/stats')
 def api_stats():

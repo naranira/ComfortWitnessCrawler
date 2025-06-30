@@ -46,9 +46,10 @@ The application follows a simple Flask MVC architecture with the following key c
 
 1. **Templates**
    - `base.html`: Bootstrap-based layout with dark theme and responsive navigation
-   - `index.html`: Article listing with pagination and summary cards
+   - `index.html`: Article listing with pagination, summary cards, and AI-powered news summary
    - `article.html`: Detailed article view with breadcrumbs
    - `search.html`: Advanced search interface with filters
+   - `archive.html`: Date-organized article archive with enhanced browsing
 
 2. **Static Assets**
    - `custom.css`: Enhanced styling with hover effects and responsive design
@@ -98,6 +99,8 @@ The application is configured for deployment with:
 
 Changelog:
 - June 30, 2025. Initial setup
+- June 30, 2025. Added archive page for browsing all articles by date
+- June 30, 2025. Integrated Vertex AI Search for AI-powered news summaries on homepage
 
 ## User Preferences
 
