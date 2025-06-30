@@ -27,18 +27,18 @@
 
         <!-- AI Summary Section -->
         {% if ai_summary and page == 1 %}
-        <div class="card mb-4 border-info">
-            <div class="card-header bg-info text-white">
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
                 <h5 class="card-title mb-0">
-                    <i class="fas fa-brain me-2"></i>
-                    AI 뉴스 요약
+                    <i class="fas fa-newspaper me-2"></i>
+                    최신 뉴스 브리핑
                 </h5>
             </div>
             <div class="card-body">
-                <p class="card-text">{{ ai_summary }}</p>
+                <p class="card-text fs-6 lh-base">{{ ai_summary }}</p>
                 <small class="text-muted">
-                    <i class="fas fa-robot me-1"></i>
-                    최신 5개 기사를 바탕으로 AI가 생성한 요약입니다
+                    <i class="fas fa-clock me-1"></i>
+                    최신 5개 기사를 종합한 실시간 브리핑
                 </small>
             </div>
         </div>
