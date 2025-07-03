@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Comfort Women News Aggregator{% endblock %}</title>
     
     <!-- Bootstrap CSS with Replit theme -->
-    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-light-theme.min.css" rel="stylesheet">
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +16,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: var(--main-bg-alt);">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="fas fa-newspaper me-2"></i>
@@ -78,7 +78,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light mt-5 py-4">
+    <footer class="mt-5 py-4" style="background-color: var(--main-bg-alt); color: var(--text-color);">
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
