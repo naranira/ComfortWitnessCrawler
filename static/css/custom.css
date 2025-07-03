@@ -1,5 +1,34 @@
 /* Custom styles for Comfort Women News Aggregator */
 
+:root {
+    --main-bg: #ffffff;
+    --main-bg-alt: #bfdff2;
+    --accent-color: #fff4db;
+    --text-color: #000000;
+}
+
+body {
+    background-color: var(--main-bg);
+    color: var(--text-color);
+}
+
+.navbar,
+footer {
+    background-color: var(--main-bg-alt) !important;
+    color: var(--text-color);
+}
+
+.navbar-brand,
+.nav-link {
+    color: var(--text-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-color);
+}
+
 /* Article content styling */
 .article-content {
     line-height: 1.7;

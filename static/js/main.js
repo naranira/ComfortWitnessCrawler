@@ -102,6 +102,8 @@ function showAlert(message, type = 'info') {
     if (alertContainer && alertMessage) {
         // Update alert content
         alertMessage.className = `alert alert-${type} alert-dismissible fade show`;
+        alertMessage.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+        alertMessage.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
         alertMessage.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
